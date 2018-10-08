@@ -22,6 +22,8 @@ class DFA:
         # self.total = 0
         self.subsets = []
         self.graph = []
+        self.accept = []
+        self.no = []
     
     def eclosure(self,nodes): # nodes为列表 函数返回对应闭包所在子集状态的id
         if nodes == []:
@@ -42,6 +44,10 @@ class DFA:
         if f == 0:
             sub = Subset(nodes) # 创建新的子集状态
             self.subsets.append(sub)
+            if 1 in nodes:
+                self.accept.append(sub.id)
+            else:
+                self.no.append(sub.id)
             return sub              
    
     def move(self,nodes,i):
@@ -60,15 +66,19 @@ class DFA:
             i.already = 1
             for c in char:
                 if not self.eclosure(self.move(i.nodes,c)) == -1:
-                    self.graph.append(Node(i.id,c,self.eclosure(self.move(i.nodes,c)).id))
+                    self.graph.append(Connect(i.id,c,self.eclosure(self.move(i.nodes,c)).id))
                     print(i.id,c,self.eclosure(self.move(i.nodes,c)).id,self.eclosure(self.move(i.nodes,c)).nodes)
                 else:
                     continue
         
     def printDFA(self):
         for g in self.graph:
-            p = "%d--[%s]--%d" % (g.ID,g.input,g.next_ID)
+            p = "%d--[%s]-- %d" % (g.ID,g.input,g.next_ID)
             print(p)
+            
+    # def printAccept(self):
+        # for a in self.accept:
+           #  print(a)
         
     
 if __name__ == "__main__":
@@ -79,4 +89,5 @@ if __name__ == "__main__":
     dfa = DFA(nfa)
     dfa.determinate()
     # dfa.printDFA()
+    # dfa.printAccept()
         
